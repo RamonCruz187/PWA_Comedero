@@ -1,0 +1,393 @@
+/* Reset básico y fuentes */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: #fff;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+header {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.datetime-container {
+    font-size: 0.9em;
+    color: #555;
+}
+
+.datetime-container p {
+    margin: 5px 0;
+}
+
+/* Secciones */
+section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+section h2 {
+    margin-top: 0;
+    color: #3498db;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+/* Botones */
+.btn {
+    display: inline-block;
+    padding: 10px 18px;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 5px;
+}
+
+.btn-primary {
+    background-color: #3498db;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #1abc9c;
+}
+
+.btn-secondary:hover {
+    background-color: #16a085;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.85em;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.button-group .btn {
+    flex-grow: 1;
+    margin: 5px;
+}
+
+/* Lista de Horarios Programados */
+#schedules-list .schedule-item {
+    display: flex;
+    flex-wrap: wrap;
+    /* Para que se ajuste en pantallas pequeñas */
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 5px;
+    border-bottom: 1px solid #ecf0f1;
+    font-size: 0.95em;
+}
+
+#schedules-list .schedule-item:last-child {
+    border-bottom: none;
+}
+
+.schedule-item .schedule-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    /* Espacio si se envuelve */
+}
+
+.schedule-item .schedule-title {
+    font-weight: bold;
+    color: #34495e;
+    min-width: 70px;
+    margin-right: 5px;
+}
+
+.schedule-item .time {
+    font-weight: bold;
+    min-width: 50px;
+    text-align: left;
+    margin-left: 5px;
+}
+
+.schedule-item .status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0 5px;
+    /* Margen ajustado */
+    flex-shrink: 0;
+}
+
+.schedule-item .status-indicator.enabled {
+    background-color: #2ecc71;
+}
+
+.schedule-item .status-indicator.disabled {
+    background-color: #e74c3c;
+}
+
+.schedule-item .schedule-portion-display {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    /* Para que ocupe espacio disponible */
+    margin-left: 10px;
+    /* Espacio desde la info de hora */
+    min-width: 150px;
+    /* Evitar que se comprima demasiado */
+}
+
+.schedule-item .portion-label {
+    color: #7f8c8d;
+    margin-right: 5px;
+}
+
+.schedule-item .portion-slider-display {
+    flex-grow: 1;
+    margin: 0 5px;
+    height: 10px;
+    /* Hacerlo más delgado */
+    cursor: default;
+    /* Indicar que no es interactivo */
+}
+
+/* Estilos específicos para el slider de display en Firefox */
+.schedule-item .portion-slider-display::-moz-range-thumb {
+    height: 14px;
+    width: 14px;
+}
+
+/* Estilos específicos para el slider de display en Webkit/Blink */
+.schedule-item .portion-slider-display::-webkit-slider-thumb {
+    height: 14px;
+    width: 14px;
+    margin-top: -2px;
+    /* Ajuste vertical */
+}
+
+.schedule-item .portion-value {
+    font-weight: bold;
+    min-width: 20px;
+    text-align: right;
+}
+
+.schedule-item .status-text {
+    font-style: italic;
+    color: #555;
+    min-width: 80px;
+    text-align: right;
+    margin-left: auto;
+    /* Empujar a la derecha */
+}
+
+
+/* Configuración de Horarios */
+.schedule-form {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+}
+
+.schedule-form h3 {
+    margin-top: 0;
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.form-group label,
+.form-group .label-text {
+    /* .label-text para los textos de switch */
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+    flex-basis: 100px;
+    /* Ancho base para la etiqueta */
+    margin-right: 10px;
+}
+
+.form-group input[type="time"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    min-width: 120px;
+    /* Para que no se encoja demasiado */
+}
+
+
+/* Switch para habilitar/deshabilitar */
+.switch-container {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    /* Para que se alinee a la derecha si hay espacio */
+}
+
+.switch-container .label-text {
+    font-weight: normal;
+    font-size: 0.9em;
+    margin-right: 5px;
+    margin-left: 5px;
+    flex-basis: auto;
+    /* Resetear flex-basis */
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: #2ecc71;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #2ecc71;
+}
+
+input:checked+.slider:before {
+    transform: translateX(26px);
+}
+
+.portion-config-container {
+    /* Contenedor para label, slider, valor en config */
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.portion-config-container label {
+    flex-basis: 100px;
+    /* Mismo que otros labels */
+    margin-right: 10px;
+}
+
+.portion-config-container input[type="range"] {
+    flex-grow: 1;
+    margin-right: 10px;
+    padding: 0;
+    /* Limpiar padding por defecto */
+}
+
+.portion-display {
+    font-weight: bold;
+    min-width: 20px;
+    text-align: right;
+}
+
+.schedule-form .btn {
+    margin-left: auto;
+    display: block;
+    margin-top: 10px;
+    /* Espacio sobre el botón */
+}
+
+
+/* Mensajes de estado en línea */
+.status-message-inline {
+    text-align: center;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    display: none;
+}
+
+.status-message-inline.info {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 0.9em;
+    color: #777;
+}

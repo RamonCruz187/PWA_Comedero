@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="block-all-mixed-content"
+    />
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <link rel="manifest" href="/manifest.json" />
+    <title>Comedero de Mascotas</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script>
+      // Verifica si está en la red del comedero
+      if (window.location.hostname !== "192.168.4.1") {
+        alert("Conéctate al WiFi 'PetFeeder_AP' para configurar el comedero.");
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Comedero de Mascotas</h1>
+        <div class="datetime-container">
+          <p>
+            Fecha/Hora Actual: <span id="current-datetime">Cargando...</span>
+          </p>
+          <button id="sync-time-btn" class="btn btn-secondary btn-small">
+            Sincronizar Hora
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="manual-feed">
+          <h2>Alimentación Manual</h2>
+          <div class="button-group">
+            <button id="feed-small-btn" class="btn btn-primary">
+              Dispensar Poco
+            </button>
+            <button id="feed-large-btn" class="btn btn-primary">
+              Dispensar Mucho
+            </button>
+          </div>
+        </section>
+
+        <section class="scheduled-feedings">
+          <h2>Horarios Programados</h2>
+          <div id="schedules-list">
+            <!-- Horarios se pre-renderizarán con valores por defecto y sliders visuales -->
+            <div class="schedule-item" id="programmed-schedule-1">
+              <div class="schedule-info">
+                <span class="schedule-title">Horario 1:</span>
+                <span class="status-indicator disabled"></span>
+                <span class="time">00:00</span>
+              </div>
+              <div class="schedule-portion-display">
+                <span class="portion-label">Porción:</span>
+                <input
+                  type="range"
+                  class="portion-slider-display"
+                  min="1"
+                  max="10"
+                  value="1"
+                  disabled
+                />
+                <span class="portion-value">1</span>
+              </div>
+              <span class="status-text">Desactivado</span>
+            </div>
+            <div class="schedule-item" id="programmed-schedule-2">
+              <div class="schedule-info">
+                <span class="schedule-title">Horario 2:</span>
+                <span class="status-indicator disabled"></span>
+                <span class="time">00:00</span>
+              </div>
+              <div class="schedule-portion-display">
+                <span class="portion-label">Porción:</span>
+                <input
+                  type="range"
+                  class="portion-slider-display"
+                  min="1"
+                  max="10"
+                  value="1"
+                  disabled
+                />
+                <span class="portion-value">1</span>
+              </div>
+              <span class="status-text">Desactivado</span>
+            </div>
+            <div class="schedule-item" id="programmed-schedule-3">
+              <div class="schedule-info">
+                <span class="schedule-title">Horario 3:</span>
+                <span class="status-indicator disabled"></span>
+                <span class="time">00:00</span>
+              </div>
+              <div class="schedule-portion-display">
+                <span class="portion-label">Porción:</span>
+                <input
+                  type="range"
+                  class="portion-slider-display"
+                  min="1"
+                  max="10"
+                  value="1"
+                  disabled
+                />
+                <span class="portion-value">1</span>
+              </div>
+              <span class="status-text">Desactivado</span>
+            </div>
+            <div class="schedule-item" id="programmed-schedule-4">
+              <div class="schedule-info">
+                <span class="schedule-title">Horario 4:</span>
+                <span class="status-indicator disabled"></span>
+                <span class="time">00:00</span>
+              </div>
+              <div class="schedule-portion-display">
+                <span class="portion-label">Porción:</span>
+                <input
+                  type="range"
+                  class="portion-slider-display"
+                  min="1"
+                  max="10"
+                  value="1"
+                  disabled
+                />
+                <span class="portion-value">1</span>
+              </div>
+              <span class="status-text">Desactivado</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="schedule-configuration">
+          <h2>Configurar Horarios</h2>
+          <div id="schedule-forms-container">
+            <!-- Los formularios de configuración se generarán aquí por JS al inicio -->
+          </div>
+        </section>
+
+        <section class="device-actions">
+          <h2>Acciones del Dispositivo</h2>
+          <button id="reboot-btn" class="btn btn-danger">
+            Reiniciar Comedero
+          </button>
+        </section>
+      </main>
+
+      <footer>
+        <p id="status-message-inline" class="status-message-inline"></p>
+      </footer>
+    </div>
+
+    <script src="/script.js"></script>
+  </body>
+</html>
