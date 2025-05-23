@@ -17,19 +17,30 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const MAX_SCHEDULES = 4;
 
-  // Función mejorada checkConnection()
   async function checkConnection() {
+    const isLocalNetwork = window.location.hostname === "192.168.4.1";
+    const apiUrl = isLocalNetwork
+      ? "/api/status"
+      : "http://192.168.4.1/api/status";
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 3000);
 
     try {
-      const response = await fetch("http://192.168.4.1/api/status", {
+      const response = await fetch(apiUrl, {
         signal: controller.signal,
+        mode: isLocalNetwork ? "same-origin" : "no-cors",
+        cache: "no-store",
       });
-      clearTimeout(timeout); // Limpiar timeout si tiene éxito
-      return response.ok;
+      clearTimeout(timeout);
+
+      // Modo no-cors no permite leer response.ok, asumimos éxito si no hay error
+      return isLocalNetwork ? response.ok : true;
     } catch (error) {
-      console.error("Error de conexión:", error);
+      console.log(
+        "Estado de conexión:",
+        error.name === "AbortError" ? "Timeout" : "Error de red",
+        error.message
+      );
       return false;
     }
   }
@@ -39,11 +50,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     showUserFeedback("Error inesperado", "error");
   });
 
-  // Verificación al iniciar la app
-  const isConnected = await checkConnection();
-  if (!isConnected) {
-    alert("Conéctate al WiFi 'PetFeeder_AP' para continuar.");
-    // Opcional: Redirigir a una página de ayuda o mostrar instrucciones
+  const isLocalComedero = window.location.hostname === "192.168.4.1";
+
+  async function initApp() {
+    if (!isLocalComedero) {
+      showUserFeedback(
+        "Conéctate al WiFi 'PetFeeder_AP' para controlar el comedero",
+        "info"
+      );
+      // Opcional: Mostrar UI alternativa o instrucciones
+      document.getElementById("wifi-alert").style.display = "block";
+      return;
+    }
+
+    try {
+      await fetchCurrentDateTime();
+      await fetchFullConfig();
+      isAppInitialized = true;
+    } catch (error) {
+      console.error("Error inicializando app:", error);
+      showUserFeedback("Error al conectar con el comedero", "error");
+    }
   }
 
   function formatLocalDateTime(date) {
@@ -71,52 +98,49 @@ document.addEventListener("DOMContentLoaded", async () => {
     statusMessageInlineEl.style.display = "none";
   }
 
+  // Reemplaza tu función apiCall actual con:
   async function apiCall(method, path, body = null, requestBodyCode = null) {
+    const baseUrl = isLocalComedero ? "" : "http://192.168.4.1";
+    const fullUrl = `${baseUrl}${API_BASE_URL}${path}`;
+
     const options = {
       method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
+      // Solo usar mode 'no-cors' cuando sea externo
+      mode: isLocalComedero ? "same-origin" : "no-cors",
     };
+
     if (body !== null) {
-      // Permitir body vacío como {} si es necesario
       const requestData = requestBodyCode
-        ? Object.keys(body).length > 0
-          ? { code: requestBodyCode, ...body }
-          : { code: requestBodyCode }
+        ? { code: requestBodyCode, ...body }
         : body;
       options.body = JSON.stringify(requestData);
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}${path}`, options);
+      const response = await fetch(fullUrl, options);
+
+      // En modo 'no-cors' la respuesta es opaca, no podemos leer el status
+      if (response.type === "opaque") {
+        return { status: "success", message: "Petición enviada" };
+      }
+
       const data = await response.json();
       hideProcessingMessage();
 
       if (!response.ok || (data.status && data.status === "error")) {
         console.error("API Error:", data);
         showUserFeedback(
-          data.message ||
-            `Error en la solicitud a ${path}. Código HTTP: ${response.status}`,
+          data.message || `Error en la solicitud a ${path}`,
           "error"
         );
         return null;
       }
-
-      if (
-        data.message &&
-        (data.status === "success" || data.status === "processing")
-      ) {
-        showUserFeedback(data.message, data.status);
-      }
       return data;
     } catch (error) {
       hideProcessingMessage();
-      console.error("Fetch Error:", error);
-      showUserFeedback(
-        `Error de conexión o respuesta no válida del servidor.`,
-        "error"
-      );
+      console.error(`Fetch Error (${path}):`, error);
+      showUserFeedback("Error de conexión", "error");
       return null;
     }
   }
@@ -323,6 +347,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   feedSmallBtn.addEventListener("click", async () => {
+    if (!isAppInitialized) {
+      showUserFeedback("Conéctate al WiFi del comedero primero", "error");
+      return;
+    }
     await apiCall("POST", "/feed/small", {}, 103);
   });
 
@@ -383,22 +411,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     isAppInitialized = true;
   }
 
-  initializeApp();
+  initApp();
 
-  // --> REGISTRO DEL SERVICE WORKER (AÑADE ESTO AL FINAL) <--
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker
-        .register("/sw.js")
-        .then((registration) => {
-          console.log(
-            "ServiceWorker registrado con éxito: ",
-            registration.scope
-          );
-        })
-        .catch((error) => {
-          console.log("Error al registrar ServiceWorker: ", error);
-        });
-    });
+  // Modifica el registro del Service Worker (al final de script.js)
+  if (
+    "serviceWorker" in navigator &&
+    window.location.hostname === "192.168.4.1"
+  ) {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then((reg) => console.log("SW registrado en ESP32"))
+      .catch((err) => console.log("SW error (solo en GitHub):", err));
   }
 });
