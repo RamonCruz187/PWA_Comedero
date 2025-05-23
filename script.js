@@ -384,4 +384,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   initializeApp();
+
+  // --> REGISTRO DEL SERVICE WORKER (AÑADE ESTO AL FINAL) <--
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((registration) => {
+          console.log(
+            "ServiceWorker registrado con éxito: ",
+            registration.scope
+          );
+        })
+        .catch((error) => {
+          console.log("Error al registrar ServiceWorker: ", error);
+        });
+    });
+  }
 });
