@@ -1,18 +1,21 @@
-const CACHE_NAME = "v1";
-const ASSETS = [
-  "/",
-  "/index.html",
-  "/script.js",
-  "/style.css",
-  "/manifest.json",
-];
+self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
 
-self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
-});
-
-self.addEventListener("fetch", (e) => {
-  e.respondWith(
-    caches.match(e.request).then((response) => response || fetch(e.request))
-  );
+  // Redirige todas las peticiones al ESP32 si estamos en su red
+  if (
+    url.hostname === "tuusuario.github.io" &&
+    navigator.connection.type === "wifi"
+  ) {
+    const esp32Url = event.request.url.replace(
+      "https://tuusuario.github.io",
+      "http://192.168.4.1"
+    );
+    event.respondWith(fetch(esp32Url));
+  } else {
+    event.respondWith(
+      caches
+        .match(event.request)
+        .then((response) => response || fetch(event.request))
+    );
+  }
 });

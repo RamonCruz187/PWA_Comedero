@@ -23,9 +23,19 @@
     <link rel="preload" href="script.js" as="script" />
     <link rel="preload" href="style.css" as="style" />
     <script>
-      // Verifica si está en la red del comedero
+      // Detecta si está en la red del comedero
       if (window.location.hostname !== "192.168.4.1") {
-        alert("Conéctate al WiFi 'PetFeeder_AP' para configurar el comedero.");
+        fetch("http://192.168.4.1/api/ping", { mode: "no-cors" })
+          .then(() => {
+            // Si responde, redirige al ESP32
+            window.location.href = "http://192.168.4.1";
+          })
+          .catch(() => {
+            // Si falla, muestra la página normal de GitHub
+            initGitHubPage();
+          });
+      } else {
+        initApp();
       }
     </script>
   </head>
@@ -171,5 +181,22 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+      function initGitHubPage() {
+        document.getElementById("app-content").style.display = "block";
+        // Muestra instrucciones para conectar al WiFi
+        <div id="wifi-instructions" style="text-align:center; padding:20px;">
+          <h2>Conectar al Comedero</h2>
+          <ol>
+            <li>Ve a Ajustes WiFi</li>
+            <li>
+              Conéctate a <strong>PetFeeder_AP</strong> (contraseña: 123456789)
+            </li>
+            <li>Vuelve a esta app</li>
+          </ol>
+          <button onclick="location.reload()">¡Ya estoy conectado!</button>
+        </div>;
+      }
+    </script>
   </body>
 </html>
